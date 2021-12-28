@@ -9,17 +9,18 @@ let connection = mysql.createConnection({
   host: '127.0.0.1'/*process.env.DB_HOST*/,
   user: 'root'/*process.env.DB_USER*/,
   password: ''/*process.env.DB_PASS*/,
-  database: 'test'/*process.env.DB_NAME8*/
+  database: 'test2'/*process.env.DB_NAME8*/
 });
 
 // View Users
 exports.view = (req, res) => {
+  //res.writeHead(200, {'content-Type' : 'text/html'});
   // User the connection
   connection.query('SELECT * FROM user WHERE status = "active"', (err, rows) => {
     // When done with the connection, release it
     if (!err) {
       let removedUser = req.query.removed;
-      res.render('home', { rows, removedUser });
+      res.render('home', { rows });
     } else {
       console.log(err);
     }
@@ -42,6 +43,7 @@ exports.find = (req, res) => {
 }
 
 exports.form = (req, res) => {
+
   res.render('add-user');
 }
 exports.signupform= (req, res) => {
@@ -49,9 +51,14 @@ exports.signupform= (req, res) => {
 }
 //Login page
 exports.login = (req, res) => {
-
+ /*var role=req.cookies.role;
+  if(role){
+    res.render('view-user', { alert: 'welcome' });
+  }*/
   res.render('login', { alert: 'welcome' });
 }
+
+
 
 
 // create token
@@ -75,7 +82,7 @@ exports.authentication = (req, res) => {
             expiresIn: 60 * 60 * 10  // expires in 10 hours  
           });
           res.cookie('auth', token);
-
+          res.cookie('role', rows[0].email);
           if (rows[0].role == 'admin') {
             res.render('admin-page', {
               success: true,

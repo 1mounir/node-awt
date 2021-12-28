@@ -9,7 +9,7 @@ var router = express.Router();
 
 router
     .use(function(req, res, next) {
-      
+       
         // check header or url parameters or post parameters for token
         var token = req.body.token || req.query.token || req.headers['x-access-token'] || req.cookies.auth;
         // decode token
@@ -31,6 +31,7 @@ router
                 success: false,
                 message: 'No token provided.'
             });
+           
         }
     });
 
